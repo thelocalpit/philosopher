@@ -6,9 +6,11 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/04 20:07:34 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/04 20:34:34 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include ""
 
 int	input_checker(char **av)
 {
@@ -25,26 +27,27 @@ int	input_checker(char **av)
 				j++;
 			else if (!(av[i][j] >= '0' && av[i][j] <= '9'))
 			{
-				ft_printf("controlla gli input, qualcosa non torna!");
+				printf("controlla gli input, qualcosa non torna!");
 				return (1);
 			}
 		j++;
 		}
 	i++;
 	}
+	return (0);
 }
 
 int	main(int ac, char **av)
 {
 	if (!(ac == 5) || !(ac == 6))
 	{
-		ft_printf("controlla gli input, qualcosa non torna!");
+		printf("controlla gli input, qualcosa non torna!");
+		return (1);
+	}
+	if (input_checker(av))
+	{
+		printf("controlla gli input, qualcosa non torna!");
 		return (1);
 	}
 	
-	if (input_checker(av))
-	{
-		ft_printf("controlla gli input, qualcosa non torna!");
-		return (1);
-	}
 }
