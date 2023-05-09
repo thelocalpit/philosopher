@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/08 19:46:08 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/09 16:44:00 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ int	ft_init_data(t_data *data, int ac, int **av)
 {
 	if (ft_init_data(data, av, ac))
 		return (1);
+	if ()
 }
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti

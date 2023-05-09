@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/08 19:34:04 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:00:23 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,22 @@
 
 struct s_data;
 
+/* la struttura philo raccoglie tutte le variabili necessarie per definire le
+	caratteristiche di ciascun filosofo. 
+	troviamo il t1 che è un valore necessario per definire il thread.
+	??? id:
+	eat count: tiene conto del numero di volte che il filosofo ha mangiato.
+	status: serve per sapere in che status è il filosofo (thinking, eating,
+	sleeping).
+	eating: è necesario per apere se sta ancora mangiando. puô capitare infatti
+	che il filosofo arrivi al punto in cui deve morire, ma invece lo lasciamo vivo
+	perchè ha già cominciato il processo di mangiare, quindi è riuscito a sopravviere
+	??? time to die: necessario sapere quanto tempo manca a morire.
+	mutex: servono per bloccare le risorse per quel determinato filosofo, fintanto
+	che non avrà finito di mangiare. questo permetterà di non avere problemi di race.
+	lock, r_fork, l_fork.
+	 */
+	
 typedef struct s_philo
 {
 	struct			s_data *data;
@@ -35,6 +51,15 @@ typedef struct s_philo
 	pthread_mutex_t l_fork;
 }		t_philo;
 
+/* la struttura data serve per raccogliere le variabili provenineti dagli argomenti passati.
+	il puntatore tid, serve per identificare il numero di ciascun thread crreato, quindi il 
+	numero di riconoscimento del philosopher in sostanza. 
+	phil num: è il numero di filosofi totali
+	meal_nb:  è il numero di pasti che ogni filosofo deve fare.
+	dead: variabile booleana che ci serve per capire se c'è qualche morto o meno.
+	stop: se c'è qualcuno che ha finito e quanti hanno finito.
+	dead, eat, sleep, start time: variabili raccolte dagli argomenti. 
+	mutex: forks, lock, write: da capire bene come e perchè. */
 typedef struct	s_data
 {
 	pthread_t		*tid;
@@ -52,6 +77,7 @@ typedef struct	s_data
 	pthread_mutex_t write;
 } 		t_data;
 
+/* NB. ogni struttura chiama láltra. possiamo quindi andare a modificare anche i dati della struttura chiamata all'	interno. */
 //	input_err
 # define ERR_IN_1 "INVALID INPUT CHARACTER"
 # define ERR_IN_2 "INVALID INPUT VALUES"
