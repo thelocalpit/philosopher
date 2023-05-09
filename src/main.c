@@ -6,12 +6,20 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/09 16:44:00 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:39:44 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
 
+
+/* in questa funzione vogliamo allocare la memoria necessaria per i filosofi
+	le forchette e che cosáltro?
+ */
+int	ft_alloc_mem(t_data *data, int ac. char **av)
+{
+	
+}
 /* per tradurre gli argomenti da testo a digit utilizziamo atoi
 ci passiamo tutti gli argomenti nella struttura data
 siccome possono essere sia 5 che 6 gli argomenti, dobbiamo gestire il numero

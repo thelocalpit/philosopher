@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/09 17:00:23 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/09 17:27:36 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,7 @@ typedef struct s_philo
 	dead: variabile booleana che ci serve per capire se c'è qualche morto o meno.
 	stop: se c'è qualcuno che ha finito e quanti hanno finito.
 	dead, eat, sleep, start time: variabili raccolte dagli argomenti. 
-	mutex: forks, lock, write: da capire bene come e perchè. */
+	??? mutex: forks, lock, write: da capire bene come e perchè. */
 typedef struct	s_data
 {
 	pthread_t		*tid;
@@ -77,7 +77,9 @@ typedef struct	s_data
 	pthread_mutex_t write;
 } 		t_data;
 
-/* NB. ogni struttura chiama láltra. possiamo quindi andare a modificare anche i dati della struttura chiamata all'	interno. */
+/* NB. ogni struttura chiama láltra. possiamo quindi andare a modificare anche i dati della struttura 
+chiamata all'	interno. */
+
 //	input_err
 # define ERR_IN_1 "INVALID INPUT CHARACTER"
 # define ERR_IN_2 "INVALID INPUT VALUES"
