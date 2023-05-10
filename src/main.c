@@ -6,19 +6,84 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/09 17:39:44 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/10 14:14:27 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
 
+/* l'utilizzo di mutex non è altro la creazione di lucchetti. Immaginiamo
+delle catene che vengono utilizzate a necessità per bloccare per un determinato
+filosofo le risorse necessarie affichè possa lavorare. una volta utilizzate,
+sblocchiamo quindi leviamo le catene alle risorse e lasciamo la chiave inserita,
+pronte per un altro filosofo che le utilizzerà. quindi una volta che il filosofo
+sta usando le risorse è come se si appropriasse della chiave per il tempo
+a lui necessario a fare l'azione di mangiare. 
+I mutex (o lucchetti) devono essere creati, allocati e poi distrutti una volta
+che non vengono più usati. */
 
-/* in questa funzione vogliamo allocare la memoria necessaria per i filosofi
-	le forchette e che cosáltro?
- */
-int	ft_alloc_mem(t_data *data, int ac. char **av)
-{
+/* in questa funzione liberiamo la memoria allocata.
+	per fare una cosa fatta a modo liberiamo tutto quello che abbiamo allocato
+	o che avremmo potuto allocare.
+	quindi in primis tid, poi le risorse e poi i vari filosofi (struct t_philo).
+	per farlo, una forma semplice per scrivere questo comando è quello di
+	mettere condizioni in modo da dire che se è stata allocata memoria (e quindi
+	la variabile in questione è diversa da 0) allora facciamo il free. altrimenti
+	non avremo da liberare niente e passeremo a quella successiva.
+	ma prima di questo dobbiamo assicurarci anche di aver distrutto i mutex.
+	per farlo possiamo usare la pthread_mutex_destroy. ricordiamochi che abbiamo
+	allocato memoria per ciascuna "catena" (catena per ogni "fork")
+	e per ciascun "lucchetto" (lucchetto per chiudere le "catene").
+	questo significa che dobbiamo fare questa azione per ogni risorsa allocatwa.
+	serve quindi un ciclo while che scorra per il numero di filosofi. 
 	
+	 */
+void	ft_free_mem(t_data *data)
+{
+	int i;
+
+	i = -1;
+
+	while (++i < data->philo_num)
+	{
+		pthread_mutex_destroy(&data->forks[i]);
+		pthread_mutex_destroy(&data->philos[i].lock);
+	}
+	/* ancora non ho capito a cosa servono queste variabili. */
+	// pthread_mutex_destroy(&data->write);
+	// pthread_mutex_destroy(&data->lock);
+	if (data->tid != 0)
+		free(data->tid);
+	if (data->forks != 0)
+		free(data->forks);
+	if (data->philos != 0)
+		free(data->philos);
+}
+/* in questa funzione vogliamo allocare la memoria necessaria, in primis per i
+threads che creeremo "TID" (uguale al numero di filosofi, perchè in realtà
+ciascun filosofo è un thread), poi allochiamo la memoria per le forchette ed
+infine allochiamo la memoria per ciascun philosofo e ogni sua variabile
+necessaria che abbiamo opportunamente inserito all'interno della struttura.
+ dubbi? si, io ho dubbi sull'allocazione delle forks. perchè le alloco come
+ mutex???
+ ogni volta devo controllare se la memoria è stata allocata bene.
+ e qui entra in gioco una funzione che creiamo che andrà a liberare la memoria
+ che potremmo aver già occupato. e
+ sempio: se ho allocato memoria per tid correttamente, e invece sbaglia ad
+ allocare le risorse (forks) dobbiamo comunque liberare anche tid.
+ quindi ci sarà la chiamata ad una funzione esterna che mi farà questo piccolo
+ lavoretto easy easy.
+
+ */
+int	ft_alloc_mem(t_data *data)
+{
+	data->tid = malloc(sizeof(pthread_t) * data->philo_num);
+	if (data->tid)
+	{
+		ft_free_mem(data);
+		printf("errore nell'allocazione dei threadssss");
+		return (1);
+	}
 }
 /* per tradurre gli argomenti da testo a digit utilizziamo atoi
 ci passiamo tutti gli argomenti nella struttura data
@@ -67,7 +132,8 @@ int	ft_init_data(t_data *data, int ac, int **av)
 {
 	if (ft_init_data(data, av, ac))
 		return (1);
-	if ()
+	if (ft_alloc_mem(data))
+		return (1);
 }
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti
