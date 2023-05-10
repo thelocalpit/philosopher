@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/10 14:14:27 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/10 15:54:57 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,21 @@ int	ft_alloc_mem(t_data *data)
 		printf("errore nell'allocazione dei threadssss");
 		return (1);
 	}
+	data->forks = malloc(sizeof(pthread_t) * data->philo_num);
+	if (data->forks)
+	{
+		ft_free_mem(data);
+		printf("errore nell'allocazione delle forchette diobbbono");
+		return (1);
+	}
+	data->philos = malloc(sizeof(t_philo) * data->philo_num);
+	if (data->philos)
+	{
+		ft_free_mem(data);
+		printf("errore nell'allocazione dei filosofi per Diana!");
+		return (1);
+	}
+	return (0);
 }
 /* per tradurre gli argomenti da testo a digit utilizziamo atoi
 ci passiamo tutti gli argomenti nella struttura data
@@ -122,18 +137,51 @@ int	ft_init_data(t_data *data, int ac, int **av)
 	}
 	data->dead = 0;
 	data->stop = 0;
-	pthread_mutex_init(&data->write, NULL);
-	pthread_mutex_init(&data->lock, NULL);
+	// pthread_mutex_init(&data->write, NULL);
+	// pthread_mutex_init(&data->lock, NULL);
 }
-/* 	questa funzione mi serve per inizializzare tutti i valori delle struct e per
-	eseguire i check del caso per gli input */
 
-	int ft_init(t_data *data, int **ac, int av)
+/* questa funzione è concettualmente la più complicata da capire per me.
+	sostanzialmente dobbiamo inizializzare le risorse.
+	e per farlo come facciamo? allochiamo memoria per tante forchette quanti
+	sono i filosofi. 
+	Per fare questa cosa, utilizziamo pthread_mutex_init, inizializzando lárray di
+	fork che abbiamo dichiarato nella struttura data.
+	in questo modo siamo in grado di utilizzare per ciascuna forchetta lock, unlock.
+	Non solo: in questa funzione cominciamo ad associare 
+	le prime forchette al primo filosofo.
+	Successivamente utilizzo due array che mi permettano di inizializzare 
+	sia le forchette a dx che quelle a sx. in questo modo avrò già 
+	a disposizione in ordine corretto le forchette di dx e di sx.
+	significa che alla forchetta di in posizione X di ciascun array corrisponderà 
+	quella a dx e a sx del philo X. questa non è una cosa necessaria, 
+	ma risulterà utile e ci permetterà di semplificare il codice e renderlo piû 
+	comprensibile invece che fare le assegnazioni ogni volta
+	 */
+int	ft_init_forks(t_data *data)
+{
+	
+}
+
+
+/* 	questa funzione mi serve per inizializzare tutti i valori delle struct e per
+	eseguire i check del caso per gli input
+	in questa funzione diamo valore a tutte le variabili necessarie 
+	nella struttura data.
+	successivamente allochiamo la memoria ft_alloc_mem per threads, forks, e philos.
+	poi what??
+	poi dobbiamo inizializzare le risorse, ovvero le forks. 
+	come lo facciamo questo? 
+	per 
+	 */
+
+	int ft_init(t_data *data, int ac, int **av)
 {
 	if (ft_init_data(data, av, ac))
 		return (1);
 	if (ft_alloc_mem(data))
 		return (1);
+	
 }
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti
@@ -164,6 +212,8 @@ int	input_checker(char **av)
 
 int	main(int ac, char **av)
 {
+	t_data	data;
+	
 	if (!(ac == 5) || !(ac == 6))
 	{
 		printf("controlla gli input, qualcosa non torna!");
@@ -174,6 +224,7 @@ int	main(int ac, char **av)
 		printf("controlla gli input, qualcosa non torna!");
 		return (1);
 	}
-	if (ft_init(&data, av, ac))
+	if (ft_init(&data, ac, av))
 		return (1);
+	
 }
