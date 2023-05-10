@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/09 17:27:36 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/10 17:09:44 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ typedef struct s_philo
 	int		 		eating;
 	uint64_t 		time_to_die;
 	pthread_mutex_t lock;
-	pthread_mutex_t r_fork;
-	pthread_mutex_t l_fork;
+	pthread_mutex_t *r_fork;
+	pthread_mutex_t *l_fork;
 }		t_philo;
 
 /* la struttura data serve per raccogliere le variabili provenineti dagli argomenti passati.
@@ -63,7 +63,7 @@ typedef struct s_philo
 typedef struct	s_data
 {
 	pthread_t		*tid;
-	int				philo_num;
+	int				philo_nb;
 	int				meals_nb;
 	int				dead;
 	int 			stop;

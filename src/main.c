@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/10 15:54:57 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/10 18:09:17 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_free_mem(t_data *data)
 
 	i = -1;
 
-	while (++i < data->philo_num)
+	while (++i < data->philo_nb)
 	{
 		pthread_mutex_destroy(&data->forks[i]);
 		pthread_mutex_destroy(&data->philos[i].lock);
@@ -77,21 +77,21 @@ necessaria che abbiamo opportunamente inserito all'interno della struttura.
  */
 int	ft_alloc_mem(t_data *data)
 {
-	data->tid = malloc(sizeof(pthread_t) * data->philo_num);
+	data->tid = malloc(sizeof(pthread_t) * data->philo_nb);
 	if (data->tid)
 	{
 		ft_free_mem(data);
 		printf("errore nell'allocazione dei threadssss");
 		return (1);
 	}
-	data->forks = malloc(sizeof(pthread_t) * data->philo_num);
+	data->forks = malloc(sizeof(pthread_t) * data->philo_nb);
 	if (data->forks)
 	{
 		ft_free_mem(data);
 		printf("errore nell'allocazione delle forchette diobbbono");
 		return (1);
 	}
-	data->philos = malloc(sizeof(t_philo) * data->philo_num);
+	data->philos = malloc(sizeof(t_philo) * data->philo_nb);
 	if (data->philos)
 	{
 		ft_free_mem(data);
@@ -120,7 +120,7 @@ condivise. */
 
 int	ft_init_data(t_data *data, int ac, int **av)
 {
-	data->philo_num = (int)ft_atoi(av[1]);
+	data->philo_nb = (int)ft_atoi(av[1]);
 	data->death_time = (u_int64_t)ft_atoi(av[2]);
 	data->eat_time = (u_int64_t)ft_atoi(av[3]);
 	data->sleep_time = (u_int64_t)ft_atoi(av[4]);
@@ -128,7 +128,7 @@ int	ft_init_data(t_data *data, int ac, int **av)
 		data->meals_nb = (int)ft_atoi(av[5]);
 	else
 		data->meals_nb = -1;
-	if (data->philo_num <= 0 || data->philo_num >= 200 || data->death_time < 0
+	if (data->philo_nb <= 0 || data->philo_nb >= 200 || data->death_time < 0
 		|| data->eat_time < 0 || data->sleep_time < 0)
 	{
 		printf("uno degli argomento ha un valore errato\n");
@@ -156,13 +156,51 @@ int	ft_init_data(t_data *data, int ac, int **av)
 	significa che alla forchetta di in posizione X di ciascun array corrisponderà 
 	quella a dx e a sx del philo X. questa non è una cosa necessaria, 
 	ma risulterà utile e ci permetterà di semplificare il codice e renderlo piû 
-	comprensibile invece che fare le assegnazioni ogni volta
+	comprensibile invece che fare le assegnazioni ogni volta.
+	quindi esempio: considerando il philo n.0, 
+	la forchetta a dx sarà la 0, e quella a sx sarà la 0. 
 	 */
 int	ft_init_forks(t_data *data)
 {
-	
+	int	i;
+
+	i = 0;
+	while (i < data->philo_nb)
+	{
+		pthread_mutex_init(&data->forks[i], NULL);
+		i++;
+	}
+	i = 1;
+	while (i < data->philo_nb)
+	{
+		data->philos[i].r_fork = &data->forks[i - 1];
+		data->philos[i].l_fork = &data->forks[i];
+	}
+	data->philos[0].r_fork = &data->forks[data->philo_nb - 1];
+	data->philos[0].r_fork = &data->forks[0];
+	return (0);
 }
 
+/* questa funzione inizializza le variabili di ciascun philo. 
+	in questo modo ci prepariamo definitivamente al loop definitivo.
+	daje */
+void	ft_init_philo(t_data	*data)
+{
+	int	i;
+
+	i = -1;
+	while (++i < data->philo_nb)
+	{
+		data->philos[i].data = data;
+		data->philos[i].id = i;
+		data->philos[i].eat_count = 0;
+		data->philos[i].eating = 0;
+		data->philos[i].status = 0;
+		data->philos[i].time_to_die = data->death_time;
+		pthread_mutex_init(&data->philos[i].lock, NULL);
+		i++;
+	}
+}
 
 /* 	questa funzione mi serve per inizializzare tutti i valori delle struct e per
 	eseguire i check del caso per gli input
@@ -171,8 +209,10 @@ int	ft_init_forks(t_data *data)
 	successivamente allochiamo la memoria ft_alloc_mem per threads, forks, e philos.
 	poi what??
 	poi dobbiamo inizializzare le risorse, ovvero le forks. 
-	come lo facciamo questo? 
-	per 
+	per farlo quindi dobbiamo fare una funzione dove inizializziamo con il mutex 
+	tutte le forchette. per maggiori specifiche guarda la funzione.
+	da ultimo dobbiamo inizializzare i philosofi.
+	
 	 */
 
 	int ft_init(t_data *data, int ac, int **av)
@@ -181,7 +221,8 @@ int	ft_init_forks(t_data *data)
 		return (1);
 	if (ft_alloc_mem(data))
 		return (1);
-	
+	if (ft_init_forks(data))
+		return (1);
 }
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti
@@ -213,7 +254,7 @@ int	input_checker(char **av)
 int	main(int ac, char **av)
 {
 	t_data	data;
-	
+
 	if (!(ac == 5) || !(ac == 6))
 	{
 		printf("controlla gli input, qualcosa non torna!");
@@ -226,5 +267,4 @@ int	main(int ac, char **av)
 	}
 	if (ft_init(&data, ac, av))
 		return (1);
-	
-}
+	ft_init_philos(data);
