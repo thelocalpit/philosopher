@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/10 18:09:17 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/11 14:58:06 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,6 +223,7 @@ void	ft_init_philo(t_data	*data)
 		return (1);
 	if (ft_init_forks(data))
 		return (1);
+	ft_init_philos(data);
 }
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti
@@ -250,7 +251,19 @@ int	input_checker(char **av)
 	}
 	return (0);
 }
-
+/* in questa funzione gestiamo il caso in cui c'è un solo philosofo.
+	cosa dobbiamo fare in questo caso? la forchetta sarà una sola, quindi 
+	il philosofo non potrà mangiare neanche.
+	 */
+int ft_one_philo(t_data data)
+{
+	
+}
+/* controlliamo il numero di argomenti
+controlliamo con input_checker che gli argomenti abbiano i giusti input
+poi inizializziamo ogni cosa iobbbono
+poi caso limite di un filosofo e basta.
+ */
 int	main(int ac, char **av)
 {
 	t_data	data;
@@ -267,4 +280,8 @@ int	main(int ac, char **av)
 	}
 	if (ft_init(&data, ac, av))
 		return (1);
-	ft_init_philos(data);
+	if (data.philo_nb == 1)
+		return (ft_one_philo(data));
+	
+	
+	
