@@ -6,12 +6,42 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/17 18:16:15 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/18 17:14:54 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../inc/philosopher.h"
+
+/* routine
+		nella funzione routine creeremo anche il thread di supervisor.
+	nella struttura di t_philos abbiamo già un thread ad hoc (t_super) che dedichiamo al
+	supervisor di ciascun filosofo.
+	
+	subito dobbiamo gestire la questione dell'argomento puntatore void:
+	lo castiamo a una struct t_philo.
+	Perchè castiamo il pointer? semplicemente per una questione di leggibilità
+	del codice.
+	la cosa importante è che dichiariamo una struttura philo per indicare il
+	philosofo in questione in quel thread.
+	
+	subito dopo la cosa importante da fare è gestire il tempo di morte dei philos.
+	per farlo dobbiamo torvare la somma fra il tempo di sistema attuale (get_time)
+	e il tempo di morte.
+	Attiveremo poi la funzione di supervisor. questa come abbiamo già visto, 
+	è necessaria per controllare attreaverso un'altro thread che creiamo come sta
+	messo a tempo dalla morte (poaraccio).
+	
+	poi quello che faremo è creare una condizione booleana affinchè il loop
+	continui fintanto che il philo è vivo.
+	se entra in questo loop, avvieremo la funzione eat e subito dopo che
+	finisce di mangiare entra invece passa in thinking e a quel punto va avanti
+	finchè qualcuno non muore.
+	dopo è necessario che si controlli che il processo del supervisor sia 
+	concluso con un pthread join.
+	
+	
+	 */
 
 /* in questo foglio andremo a creare il nostro fantastico loop continuo
 per mettere in azione i filosofi. il loop agirà sia sulle azioni da fare ma
@@ -78,9 +108,7 @@ quindi routine diremo "hey amico te pupoi andare" mentre diremo anche
 	è stata deprecata.
 	
 
-	nella funzione routine creeremo anche il thread di supervisor. 
-	nella struttura di t_philos abbiamo già un thread ad hoc (t1) che dedichiamo al 
-	supervisor di ciascun filosofo.
+
 	
 	 */
 
