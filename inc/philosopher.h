@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/10 17:09:44 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/19 19:21:22 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ struct s_data;
 typedef struct s_philo
 {
 	struct			s_data *data;
-	pthread_t		t1;
+	pthread_t		t_super;
 	int 			id;
 	int				eat_count;
 	int 			status;
