@@ -6,12 +6,41 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/19 19:38:52 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/20 18:49:13 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../inc/philosopher.h"
+
+/* get_time
+
+	la funzione get_time è necessaria per calcolarsi il tempo e stampare
+	l'intervallo di tempo giusto quando mandiamo i messaggi ma anche quando
+	dobbiamo controllare che un sia morto nessuno.
+	lo facciamo con u_int64_t perchè in questo modo sappiamo per certo che
+	non ci sareà nessun tipo di overflow e non abbiamo necessità dei negativi
+	perchè si parla di tempo.
+	la struttura timeval conterrà il tempo di sistema.
+	Viene chiamata la funzione gettimeofday(&tv, NULL), che ottiene l'ora
+	corrente e la memorizza nella struttura tv.
+	ritorneremo il valore in MILLISECONDI calcolando
+	(tv.tv_sec * 1000) + (tv.tv_usec /1000).
+	Il tempo viene calcolato come la somma dei secondi convertiti 
+	in millisecondi (tv_sec * (u_int64_t)1000) e dei microsecondi convertiti 
+	in millisecondi (tv_usec / 1000). Questo calcolo tiene conto del fatto 
+	che ci sono 1000 millisecondi in un secondo.
+	 */
+
+u_int64_t get_time(void)
+{
+	struct timeval tv;
+
+	if (gettimeofday(&tv, NULL))
+		return (error("gettimeofday() FAILURE\n", NULL));
+	return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
+}
+
 
 /* funzione messages.
 	
@@ -23,6 +52,36 @@
 	contemporanemente ma in maniera ordianta. Molto intelligente.
 	beh su qeusta cosa devo chiedere a qualcuno se c'è un'alternativa. 
 	però non è richiesto che venga eseguito in ordine.  */
+
+
+/* monitor
+	
+	la funzione di monitor ci serve invece solo per controllare se il processo
+	è terminato, ovvero se stop ha raggiunto il numero uguale 
+	al totale dei filosofi.
+	viene fatto un ciclo che va avanti fintanto che dead è a 0. questo ciclo 
+	controlla se effettivamente tutti hanno finito.
+	la condizione che verifica la cosa è se stop ha pareggiato o superato il
+	nuemro di philos.
+	a quel punto la variabile dead sarà uguale a 1 e uscirà dal loop. Non perchè
+	è morto qualcuno ma perchè ci evitiamo di fare un'altra variabile.
+	 */
+
+void	*monitor(void *philo_p)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)philo_p;
+	// printf("data val: %d", philo->data->dead);
+	while (philo->data->dead == 0)
+	{
+		pthread_mutex_lock(&philo->lock);
+		if (philo->data->stop >= philo->data->philo_nb)
+			philo->data->dead = 1;
+		pthread_mutex_unlock(&philo->lock);
+	}
+	return ((void *)0);
+}
 
 /* eat routine
 
@@ -59,35 +118,102 @@
 		da il messaggio che sta dormendo susseguito da ft_usleep per il tempo di sleep.
 		
 		
+ */
 
+void	eat(t_philo *philo)
+{
+	pthread_mutex_lock(philo->r_fork);
+	time = get_time() - philo->data->start_time;
+	printf("%llu %d has taken a fork", time, philo->id);
+	pthread_mutex_lock(philo->l_fork);
+	time = get_time() - philo->data->start_time;
+	printf("%llu %d has taken a fork", time, philo->id);
+	pthread_mutex_lock(&philo->lock);
+	philo->eating = 1;
+	philo->time_to_die = get_time() + philo->data->death_time;
+	time = get_time() - philo->data->start_time;
+	printf("%llu %d is eating", time, philo->id);
+	philo->eat_count++;
+	ft_usleep(philo->data->eat_time);
+	philo->eating = 0;
+	pthread_mutex_unlock(&philo->lock);
+	pthread_mutex_unlock(philo->r_fork);
+	pthread_mutex_unlock(philo->l_fork);
+	printf("%llu %d is sleeping", time, philo->id);
+	ft_usleep(philo->data->sleep_time);
+}
 
+/* supervisor
+	
+	funzione necessaria pe controllare se un philo è morto oppure no
+	come anche routine, questa funzione prendere come argomento un puntatore
+	void e ritorna un puntatore void
+	stesso giochetto, facciamo il casting al type t_philo.
+	qui se il tempo calcolato con get_time è uguale o maggiore del tempo di
+	e il philo non sta a magnà, allora si manda il messaggio che è morto.
+	la questione realtiva al lock della struttura philo e al lock della
+	struttura data  è fondamentale: con il lock alla struttura philo ci assicuriamo
+	che non avvenga una race di nessun tipo sulla struttura e stesso su quella
+	di data nel momento in cui gestiamo la parte relativa al termine del 
+	compito del philo, ovvero quella di mangiare tot volte. mettendo il lock,
+	prima di far andare avanti gli altri processi (ricordiamoci che il thread
+	continua ad andare a diritto senza tregua) ci assicuriamo di controllare
+	se il philo ha ha concluso il suo numero di pasti e se tutti i philos hanno
+	finito di mangiare. in questo modo, con le giuste condizioni non facciamo andare
+	avanti i philos.  
+	
+	Non capisco perchè aumento anche l'eat count quando eat count è uguale a meals nb.
 	 */
+
+void	*supervisor(void *philo_p)
+{
+	t_philo	*philo;
+
+	philo = (t_philo *)philo_p;
+	while (philo->data->dead == 0)
+	{
+		pthread_mutex_lock(&philo->lock);
+		if (get_time() >= philo->time_to_die && philo->eating == 0)
+		{
+			time = get_time() - philo->data->start_time;
+			printf("%llu %d philo is dead", time, philo->id);
+		}
+		if (philo->eat_count == philo->data->meals_nb)
+		{
+			pthread_mutex_lock(&philo->data->lock);
+			philo->data->stop++;
+			philo->eat_count++;
+			pthread_mutex_unlock(&philo->data->lock);
+		}
+	}
+	pthread_mutex_unlock(&philo->lock);
+}
 
 /* routine
 		nella funzione routine creeremo anche il thread di supervisor.
 	nella struttura di t_philos abbiamo già un thread ad hoc (t_super) che dedichiamo al
 	supervisor di ciascun filosofo.
-	
+
 	subito dobbiamo gestire la questione dell'argomento puntatore void:
 	lo castiamo a una struct t_philo.
 	Perchè castiamo il pointer? semplicemente per una questione di leggibilità
 	del codice.
 	la cosa importante è che dichiariamo una struttura philo per indicare il
 	philosofo in questione in quel thread.
-	
+
 	subito dopo la cosa importante da fare è gestire il tempo di morte dei philos.
 	per farlo dobbiamo torvare la somma fra il tempo di sistema attuale (get_time)
 	e il tempo di morte.
-	Attiveremo poi la funzione di supervisor. questa come abbiamo già visto, 
+	Attiveremo poi la funzione di supervisor. questa come abbiamo già visto,
 	è necessaria per controllare attreaverso un'altro thread che creiamo come sta
 	messo a tempo dalla morte (poaraccio).
-	
+
 	poi quello che faremo è creare una condizione booleana affinchè il loop
 	continui fintanto che il philo è vivo.
 	se entra in questo loop, avvieremo la funzione eat e subito dopo che
 	finisce di mangiare entra invece passa in thinking e a quel punto va avanti
 	finchè qualcuno non muore.
-	dopo è necessario che si controlli che il processo del supervisor sia 
+	dopo è necessario che si controlli che il processo del supervisor sia
 	concluso con un pthread join.
 	 */
 
@@ -102,12 +228,14 @@ void	*routine(void *philo_pointer)
 	while (philo->data->dead == 0)
 	{
 		eat(philo);
-		printf("philo is thinking"); 
-		/* questo printf deve però contenere la stampa anche del tempo in cui 
-		viene stampato, l'id del philosofo e il messaggio. per ora ho messo 
-		solo il messaggio */
+		time = get_time() - philo->data->start_time;
+		printf("%llu %d philo is thinking", time, philo->id);
 	}
+	if (pthread_join (philo->t_super, NULL))
+		return ((void *)1);
+	return ((void *)0);
 }
+
 
 /* in questo foglio andremo a creare il nostro fantastico loop continuo
 per mettere in azione i filosofi. il loop agirà sia sulle azioni da fare ma

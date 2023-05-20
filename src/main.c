@@ -6,11 +6,48 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/11 14:58:06 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/20 23:49:31 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
+
+int ft_usleep(useconds_t time)
+{
+	u_int64_t start;
+
+	start = get_time();
+	while ((get_time() - start) < time)
+		usleep(time / 10);
+	return (0);
+}
+
+
+int ft_atoi(const char *str)
+{
+	int i;
+	int s;
+	int res;
+
+	i = 0;
+	s = 1;
+	res = 0;
+	while (str[i] == ' ' || str[i] == '\n' || str[i] == '\t' 
+		|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			s = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = (res * 10) + (str[i] - '0');
+		i++;
+	}
+	return (res * s);
+}
 
 /* l'utilizzo di mutex non è altro la creazione di lucchetti. Immaginiamo
 delle catene che vengono utilizzate a necessità per bloccare per un determinato
@@ -51,7 +88,7 @@ void	ft_free_mem(t_data *data)
 	}
 	/* ancora non ho capito a cosa servono queste variabili. */
 	// pthread_mutex_destroy(&data->write);
-	// pthread_mutex_destroy(&data->lock);
+	pthread_mutex_destroy(&data->lock);
 	if (data->tid != 0)
 		free(data->tid);
 	if (data->forks != 0)
@@ -138,7 +175,7 @@ int	ft_init_data(t_data *data, int ac, int **av)
 	data->dead = 0;
 	data->stop = 0;
 	// pthread_mutex_init(&data->write, NULL);
-	// pthread_mutex_init(&data->lock, NULL);
+	pthread_mutex_init(&data->lock, NULL);
 }
 
 /* questa funzione è concettualmente la più complicata da capire per me.
@@ -252,12 +289,30 @@ int	input_checker(char **av)
 	return (0);
 }
 /* in questa funzione gestiamo il caso in cui c'è un solo philosofo.
-	cosa dobbiamo fare in questo caso? la forchetta sarà una sola, quindi 
+	cosa dobbiamo fare in questo caso? la forchetta sarà una sola, quindi
 	il philosofo non potrà mangiare neanche.
+	La funzione pthread_detach viene utilizzata per indicare al sistema che il 
+	thread specificato, in questo caso data->tid[0], deve essere creato in 
+	modalità detachable. Ciò significa che una volta che il thread termina 
+	la sua esecuzione, le risorse associate a esso possono essere liberate 
+	automaticamente dal sistema operativo, senza la necessità di chiamare 
+	esplicitamente la funzione pthread_join per unire il thread.
 	 */
-int ft_one_philo(t_data data)
-{
 	
+int ft_one_philo(t_data *data)
+{
+	data->start_time = get_time();
+	if (pthread_create(&data->tid[0], NULL, &routine, &data->philos[0]))
+	{
+		printf("errore mentre vengono creati i threads");
+		ft_free_mem(data);
+		return (1);
+	}
+	pthread_detach(data->tid[0]);
+	while (data->dead == 0)
+		ft_usleep(0);
+	ft_free_mem(data);
+	return (0);
 }
 /* controlliamo il numero di argomenti
 controlliamo con input_checker che gli argomenti abbiano i giusti input
@@ -282,6 +337,8 @@ int	main(int ac, char **av)
 		return (1);
 	if (data.philo_nb == 1)
 		return (ft_one_philo(data));
-	
-	
-	
+	if (thread_init(&data))
+		return (1);
+	ft_free_mem(&data);
+	return (0);
+}

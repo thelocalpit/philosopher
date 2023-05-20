@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/19 19:21:22 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/20 11:14:54 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +77,7 @@ typedef struct	s_data
 	pthread_mutex_t write;
 } 		t_data;
 
+u_int64_t			time;
 /* NB. ogni struttura chiama láltra. possiamo quindi andare a modificare anche i dati della struttura 
 chiamata all'	interno. */
 
