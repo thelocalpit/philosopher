@@ -6,12 +6,12 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/20 11:14:54 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/22 18:09:54 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef	PHILO_H
-# define PHILO_H
+#ifndef PHILOSOPHER_H
+# define PHILOSOPHER_H
 # include <stdbool.h>
 # include <stdlib.h>
 # include <unistd.h>
@@ -19,7 +19,7 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-struct s_data;
+struct	s_data;
 
 /* la struttura philo raccoglie tutte le variabili necessarie per definire le
 	caratteristiche di ciascun filosofo. 
@@ -29,75 +29,73 @@ struct s_data;
 	status: serve per sapere in che status è il filosofo (thinking, eating,
 	sleeping).
 	eating: è necesario per apere se sta ancora mangiando. puô capitare infatti
-	che il filosofo arrivi al punto in cui deve morire, ma invece lo lasciamo vivo
-	perchè ha già cominciato il processo di mangiare, quindi è riuscito a sopravviere
+	che il filosofo arrivi al punto in cui deve morire, ma invece lo 
+	lasciamo vivo perchè ha già cominciato il processo di mangiare, 
+	quindi è riuscito a sopravviere
 	??? time to die: necessario sapere quanto tempo manca a morire.
-	mutex: servono per bloccare le risorse per quel determinato filosofo, fintanto
-	che non avrà finito di mangiare. questo permetterà di non avere problemi di race.
+	mutex: servono per bloccare le risorse per quel determinato filosofo, 
+	fintanto che non avrà finito di mangiare. questo permetterà 
+	di non avere problemi di race.
 	lock, r_fork, l_fork.
 	 */
-	
+
 typedef struct s_philo
 {
-	struct			s_data *data;
+	struct s_data	*data;
 	pthread_t		t_super;
-	int 			id;
+	int				id;
 	int				eat_count;
-	int 			status;
-	int		 		eating;
-	uint64_t 		time_to_die;
-	pthread_mutex_t lock;
-	pthread_mutex_t *r_fork;
-	pthread_mutex_t *l_fork;
+	int				status;
+	int				eating;
+	uint64_t		time_to_die;
+	pthread_mutex_t	lock;
+	pthread_mutex_t	*r_fork;
+	pthread_mutex_t	*l_fork;
 }		t_philo;
 
-/* la struttura data serve per raccogliere le variabili provenineti dagli argomenti passati.
-	il puntatore tid, serve per identificare il numero di ciascun thread crreato, quindi il 
-	numero di riconoscimento del philosopher in sostanza. 
+/* la struttura data serve per raccogliere le variabili provenineti 
+	dagli argomenti passati.
+	il puntatore tid, serve per identificare il numero di ciascun 
+	thread crreato, quindi il numero di riconoscimento del philosopher
+	in sostanza. 
 	phil num: è il numero di filosofi totali
 	meal_nb:  è il numero di pasti che ogni filosofo deve fare.
 	dead: variabile booleana che ci serve per capire se c'è qualche morto o meno.
 	stop: se c'è qualcuno che ha finito e quanti hanno finito.
 	dead, eat, sleep, start time: variabili raccolte dagli argomenti. 
 	??? mutex: forks, lock, write: da capire bene come e perchè. */
-typedef struct	s_data
+typedef struct s_data
 {
 	pthread_t		*tid;
 	int				philo_nb;
 	int				meals_nb;
 	int				dead;
-	int 			stop;
-	t_philo 		*philos;
+	int				stop;
+	t_philo			*philos;
 	u_int64_t		death_time;
 	u_int64_t		eat_time;
 	u_int64_t		sleep_time;
 	u_int64_t		start_time;
-	pthread_mutex_t *forks;
-	pthread_mutex_t lock;
-	pthread_mutex_t write;
-} 		t_data;
+	pthread_mutex_t	*forks;
+	pthread_mutex_t	lock;
+	pthread_mutex_t	write;
+}		t_data;
 
-u_int64_t			time;
-/* NB. ogni struttura chiama láltra. possiamo quindi andare a modificare anche i dati della struttura 
-chiamata all'	interno. */
+u_int64_t	time;
 
-//	input_err
-# define ERR_IN_1 "INVALID INPUT CHARACTER"
-# define ERR_IN_2 "INVALID INPUT VALUES"
-
-//	pthread_err
-# define TH_ERR "ERROR WHILE CREATING THREADS"
-# define JOIN_ERR "ERROR WHILE JOINING THREADS"
-# define INIT_ERR_1 "ERROR WHILE INIT FORKS"
-
-//	time_err WTFFFF
-# define TIME_ERR "UNABLE TO RETRIVE UTC"
-
-//	philo_msg
-# define TAKE_FORKS "has taken a fork"
-# define THINKING "is thinking"
-# define SLEEPING "is sleeping"
-# define EATING "is eating"
-# define DIED "died"
+void		ft_free_mem(t_data *data);
+u_int64_t	get_time(void);
+void		eat(t_philo *philo);
+int			ft_alloc_mem(t_data *data);
+int			ft_init_data(t_data *data, int ac, int **av);
+int			ft_init_forks(t_data *data);
+void		ft_init_philo(t_data *data);
+void		*monitor(void *philo_p);
+void		*supervisor(void *philo_p);
+void		*routine(void *philo_pointer);
+int			thread_init(t_data *data);
+int			input_checker(char **av);
+int			ft_usleep(useconds_t time);
+int			ft_atoi(const char *str);
 
 #endif

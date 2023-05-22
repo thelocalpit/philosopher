@@ -6,9 +6,11 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:10 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/16 15:27:21 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/22 16:33:43 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+#include "../inc/philosopher.h"
 
 /* La funzione get_time restituisce il tempo attuale in millisecondi 
 come un valore di tipo u_int64_t. Utilizza la funzione di sistema 
@@ -43,3 +45,65 @@ registrazione o monitoraggio. */
 /* La funzione ft_usleep è una funzione personalizzata che introduce
 una pausa (delay) nell'esecuzione del programma 
 per un determinato numero di microsecondi. */
+
+// Controllo subito con questa funzione che i caratteri inseriti siano giusti
+int	input_checker(char **av)
+{
+	int	i;
+	int	j;
+
+	i = 1;
+	while (av[i])
+	{
+		j = 0;
+		while (av[i][j])
+		{
+			if (av[i][j] == ' ')
+				j++;
+			else if (!(av[i][j] >= '0' && av[i][j] <= '9'))
+			{
+				printf("controlla gli input, qualcosa non torna!");
+				return (1);
+			}
+			j++;
+		}
+		i++;
+	}
+	return (0);
+}
+
+int ft_usleep(useconds_t time)
+{
+	u_int64_t	start;
+
+	start = get_time();
+	while ((get_time() - start) < time)
+		usleep(time / 10);
+	return (0);
+}
+
+int	ft_atoi(const char *str)
+{
+	int	i;
+	int	s;
+	int	res;
+
+	i = 0;
+	s = 1;
+	res = 0;
+	while (str[i] == ' ' || str[i] == '\n' || str[i] == '\t'
+		|| str[i] == '\v' || str[i] == '\f' || str[i] == '\r')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
+	{
+		if (str[i] == '-')
+			s = -1;
+		i++;
+	}
+	while (str[i] >= '0' && str[i] <= '9')
+	{
+		res = (res * 10) + (str[i] - '0');
+		i++;
+	}
+	return (res * s);
+}
