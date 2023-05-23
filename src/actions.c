@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:37:58 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/22 17:45:33 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/23 18:11:31 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ u_int64_t	get_time(void)
 	if (gettimeofday(&tv, NULL))
 	{
 		printf("gettimeofday() FAILURE\n");
-		ft_free_mem(data);
+		ft_free_mem(NULL);
 		return (1);
 	}
 	return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
@@ -81,6 +81,8 @@ u_int64_t	get_time(void)
 
 void	eat(t_philo *philo)
 {
+	u_int64_t	time;
+
 	pthread_mutex_lock(philo->r_fork);
 	time = get_time() - philo->data->start_time;
 	printf("%llu %d has taken a fork", time, philo->id);

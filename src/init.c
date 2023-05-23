@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:00 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/22 16:47:51 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/23 18:21:35 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ sia eseguita in modo sincronizzato dai vari thread,
 mentre la variabile "lock" è utilizzata per proteggere l'accesso a risorse
 condivise. */
 
-int	ft_init_data(t_data *data, int ac, int **av)
+int	ft_init_data(t_data *data, int ac, char **av)
 {
 	data->philo_nb = (int)ft_atoi(av[1]);
 	data->death_time = (u_int64_t)ft_atoi(av[2]);
@@ -93,6 +93,7 @@ int	ft_init_data(t_data *data, int ac, int **av)
 	data->stop = 0;
 	// pthread_mutex_init(&data->write, NULL);
 	pthread_mutex_init(&data->lock, NULL);
+	return (0);
 }
 
 /* questa funzione è concettualmente la più complicata da capire per me.
@@ -171,13 +172,14 @@ void	ft_init_philo(t_data *data)
 
 	 */
 
-int	ft_init(t_data *data, int ac, int **av)
+int	ft_init(t_data *data, int ac, char **av)
 {
-	if (ft_init_data(data, av, ac))
+	if (ft_init_data(data, ac, av))
 		return (1);
 	if (ft_alloc_mem(data))
 		return (1);
 	if (ft_init_forks(data))
 		return (1);
-	ft_init_philos(data);
+	ft_init_philo(data);
+	return (0);
 }

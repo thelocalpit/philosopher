@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/22 18:09:54 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/23 18:23:08 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,13 +81,11 @@ typedef struct s_data
 	pthread_mutex_t	write;
 }		t_data;
 
-u_int64_t	time;
-
 void		ft_free_mem(t_data *data);
 u_int64_t	get_time(void);
 void		eat(t_philo *philo);
 int			ft_alloc_mem(t_data *data);
-int			ft_init_data(t_data *data, int ac, int **av);
+int			ft_init_data(t_data *data, int ac, char **av);
 int			ft_init_forks(t_data *data);
 void		ft_init_philo(t_data *data);
 void		*monitor(void *philo_p);
@@ -96,6 +94,7 @@ void		*routine(void *philo_pointer);
 int			thread_init(t_data *data);
 int			input_checker(char **av);
 int			ft_usleep(useconds_t time);
-int			ft_atoi(const char *str);
+int			ft_atoi(char *str);
+int			ft_init(t_data *data, int ac, char **av);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:10 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/22 16:33:43 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/23 18:16:43 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int ft_usleep(useconds_t time)
 	return (0);
 }
 
-int	ft_atoi(const char *str)
+int	ft_atoi(char *str)
 {
 	int	i;
 	int	s;

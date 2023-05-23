@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/22 16:38:32 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/23 18:30:50 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,8 @@ void	*monitor(void *philo_p)
 
 void	*supervisor(void *philo_p)
 {
-	t_philo	*philo;
+	t_philo		*philo;
+	u_int64_t	time;
 
 	philo = (t_philo *)philo_p;
 	while (philo->data->dead == 0)
@@ -130,11 +131,12 @@ void	*supervisor(void *philo_p)
 
 void	*routine(void *philo_pointer)
 {
-	t_philo	*philo;
+	t_philo		*philo;
+	u_int64_t	time;
 
 	philo = (t_philo *) philo_pointer;
 	philo->time_to_die = get_time() + philo->data->death_time;
-	if (pthread_create(philo->t_super, NULL, &supervisor, (void *) philo))
+	if (pthread_create(&philo->t_super, NULL, &supervisor, (void *) philo))
 		return ((void *)1);
 	while (philo->data->dead == 0)
 	{
@@ -225,7 +227,7 @@ int	thread_init(t_data *data)
 	data->start_time = get_time();
 	if (data->meals_nb > 0)
 	{
-		if (pthread_create(&t_mon, NULL, &routine, &data->philos[i]))
+		if (pthread_create(&t_mon, NULL, &monitor, &data->philos[0]))
 		{
 			printf("errore mentre vengono creati i threads");
 			ft_free_mem(data);

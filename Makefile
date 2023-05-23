@@ -6,7 +6,7 @@
 #    By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/28 10:29:44 by pfalasch          #+#    #+#              #
-#    Updated: 2023/05/04 19:33:33 by pfalasch         ###   ########.fr        #
+#    Updated: 2023/05/23 17:39:42 by pfalasch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -33,16 +33,12 @@ MAGENTA		=	\033[0;95m
 CYAN		=	\033[0;96m
 WHITE		=	\033[0;97m
 
-SRC_FILES	=	philo
+SRC_FILES	=	actions init main threads utils 
 
 SRC 		= 	$(addprefix $(SRC_DIR), $(addsuffix .c, $(SRC_FILES)))
 OBJ 		= 	$(addprefix $(OBJ_DIR), $(addsuffix .o, $(SRC_FILES)))
 
 OBJF		=	.cache_exists
-
-start:
-			
-			@make all
 
 all:		$(NAME) 
 
