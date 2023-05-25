@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:37:58 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:43:07 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 17:21:50 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ u_int64_t get_time(void)
 void messages(char *str, t_philo *philo)
 {
 	u_int64_t time;
-
+	
 	pthread_mutex_lock(&philo->data->write);
 	time = get_time() - philo->data->start_time;
 	if (ft_strcmp("died", str) == 0 && philo->data->dead == 0)

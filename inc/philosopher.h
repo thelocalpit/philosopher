@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:45:51 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 17:43:50 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ typedef struct s_philo
 	pthread_t		t_super;
 	int				id;
 	int				eat_count;
-	int				status;
+	// int				status;
 	int				eating;
 	uint64_t		time_to_die;
 	pthread_mutex_t	lock;
@@ -81,7 +81,7 @@ typedef struct s_data
 	pthread_mutex_t	write;
 }		t_data;
 
-void		ft_free_mem(t_data *data);
+int			ft_free_mem(t_data *data);
 u_int64_t	get_time(void);
 void		eat(t_philo *philo);
 int			ft_alloc_mem(t_data *data);

@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:35:41 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:13:53 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 22:24:50 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,7 @@ int	ft_one_philo(t_data *data)
 	if (pthread_create(&data->tid[0], NULL, &routine, &data->philos[0]))
 	{
 		printf("errore mentre vengono creati i threads");
-		ft_free_mem(data);
-		return (1);
+		return (ft_free_mem(data));
 	}
 	pthread_detach(data->tid[0]);
 	while (data->dead == 0)
@@ -65,25 +64,28 @@ che non vengono più usati. */
 	serve quindi un ciclo while che scorra per il numero di filosofi. 
 	
 	 */
-void	ft_free_mem(t_data *data)
+int	ft_free_mem(t_data *data)
 {
 	int	i;
 
-	i = -1;
-
-	while (++i < data->philo_nb)
+	if (data)
 	{
-		pthread_mutex_destroy(&data->forks[i]);
-		pthread_mutex_destroy(&data->philos[i].lock);
+		i = -1;
+		while (++i < data->philo_nb)
+		{
+			pthread_mutex_destroy(&data->forks[i]);
+			pthread_mutex_destroy(&data->philos[i].lock);
+		}
+		pthread_mutex_destroy(&data->write);
+		pthread_mutex_destroy(&data->lock);
+		if (data->tid)
+			free(data->tid);
+		if (data->forks)
+			free(data->forks);
+		if (data->philos)
+			free(data->philos);
 	}
-	pthread_mutex_destroy(&data->write);
-	pthread_mutex_destroy(&data->lock);
-	if (data->tid)
-		free(data->tid);
-	if (data->forks)
-		free(data->forks);
-	if (data->philos)
-		free(data->philos);
+	return (1);
 }
 
 /* controlliamo il numero di argomenti

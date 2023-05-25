@@ -6,7 +6,7 @@
 #    By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/28 10:29:44 by pfalasch          #+#    #+#              #
-#    Updated: 2023/05/23 17:39:42 by pfalasch         ###   ########.fr        #
+#    Updated: 2023/05/25 16:51:18 by pfalasch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -73,7 +73,7 @@ re:			fclean all
 
 norm:
 			@clear
-			@norminette $(SRC) $(INC) $(LIBFT) | grep -v Norme -B1 || true
+			@norminette $(SRC) $(INC) | grep -v Norme -B1 || true
 
 .PHONY:		all clean fclean re norm
 
