@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:37:58 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:32:45 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 15:43:07 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ void messages(char *str, t_philo *philo)
 
 void	eat(t_philo *philo)
 {
-	u_int64_t	time;
+	// u_int64_t	time;
 
 	pthread_mutex_lock(philo->r_fork);
 	messages("has taken a fork", philo);

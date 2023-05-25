@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/23 18:23:08 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 15:45:51 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,9 @@ void		*routine(void *philo_pointer);
 int			thread_init(t_data *data);
 int			input_checker(char **av);
 int			ft_usleep(useconds_t time);
-int			ft_atoi(char *str);
+long		ft_atoi(char *str);
 int			ft_init(t_data *data, int ac, char **av);
+int			ft_strcmp(char *s1, char *s2);
+void		messages(char *str, t_philo *philo);
 
 #endif
