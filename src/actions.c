@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:37:58 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/23 18:11:31 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 15:32:45 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,17 +31,55 @@
 	che ci sono 1000 millisecondi in un secondo.
 	 */
 
-u_int64_t	get_time(void)
+u_int64_t get_time(void)
 {
-	struct timeval	tv;
+	struct timeval tv;
 
 	if (gettimeofday(&tv, NULL))
 	{
 		printf("gettimeofday() FAILURE\n");
-		ft_free_mem(NULL);
+		// ft_free_mem(NULL);
 		return (1);
 	}
 	return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
+}
+
+/* funzione messages.
+
+	non so se la voglio fare. per strutturarla in maniera funzionale, dovrei
+	creare condizioni secondo le quali viene scritta una cosa piuttosto
+	che un'altra. Tterribi utilizza un metodo con il define nell header,
+	io per ora ho deciso di printare a schermo ciascuna volta.
+	infatti utilizza una funzione di lock per non far scrivere le cose
+	contemporanemente ma in maniera ordianta. Molto intelligente.
+	beh su qeusta cosa devo chiedere a qualcuno se c'è un'alternativa.
+	però non è richiesto che venga eseguito in ordine.
+
+	alla fine è necessario sviluppare una funzione del genere. semplifica la
+	scrittura di tutta la parte del codice e utilizza la parte dei messaggi
+	per definire la morte e la terminazione del programma.
+	ft_strcmp serve per definire quando effettivamente il messaggio passato
+	è died.
+	Questa serve per mandare i messaggi a schermo.
+	
+	
+ */
+
+
+void messages(char *str, t_philo *philo)
+{
+	u_int64_t time;
+
+	pthread_mutex_lock(&philo->data->write);
+	time = get_time() - philo->data->start_time;
+	if (ft_strcmp("died", str) == 0 && philo->data->dead == 0)
+	{
+		printf("%llu %d %s\n", time, philo->id, str);
+		philo->data->dead = 1;
+	}
+	if (!philo->data->dead)
+		printf("%llu %d %s\n", time, philo->id, str);
+	pthread_mutex_unlock(&philo->data->write);
 }
 
 /* eat routine
@@ -84,22 +122,25 @@ void	eat(t_philo *philo)
 	u_int64_t	time;
 
 	pthread_mutex_lock(philo->r_fork);
-	time = get_time() - philo->data->start_time;
-	printf("%llu %d has taken a fork", time, philo->id);
+	messages("has taken a fork", philo);
+	// time = get_time() - philo->data->start_time;
+	// printf("%llu %d has taken a fork", time, philo->id);
 	pthread_mutex_lock(philo->l_fork);
-	time = get_time() - philo->data->start_time;
-	printf("%llu %d has taken a fork", time, philo->id);
+	messages("has taken a fork", philo);
+	// time = get_time() - philo->data->start_time;
+	// printf("%llu %d has taken a fork", time, philo->id);
 	pthread_mutex_lock(&philo->lock);
 	philo->eating = 1;
 	philo->time_to_die = get_time() + philo->data->death_time;
-	time = get_time() - philo->data->start_time;
-	printf("%llu %d is eating", time, philo->id);
+	messages("is eating", philo);
+	// time = get_time() - philo->data->start_time;
+	// printf("%llu %d is eating", time, philo->id);
 	philo->eat_count++;
 	ft_usleep(philo->data->eat_time);
 	philo->eating = 0;
 	pthread_mutex_unlock(&philo->lock);
 	pthread_mutex_unlock(philo->r_fork);
 	pthread_mutex_unlock(philo->l_fork);
-	printf("%llu %d is sleeping", time, philo->id);
+	messages("is sleeping", philo);
 	ft_usleep(philo->data->sleep_time);
 }

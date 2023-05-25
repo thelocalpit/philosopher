@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:10 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/23 18:16:43 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 15:39:25 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,8 +59,11 @@ int	input_checker(char **av)
 		while (av[i][j])
 		{
 			if (av[i][j] == ' ')
+			{
 				j++;
-			else if (!(av[i][j] >= '0' && av[i][j] <= '9'))
+				continue ;
+			}
+			if (!(av[i][j] >= '0' && av[i][j] <= '9'))
 			{
 				printf("controlla gli input, qualcosa non torna!");
 				return (1);
@@ -72,7 +75,7 @@ int	input_checker(char **av)
 	return (0);
 }
 
-int ft_usleep(useconds_t time)
+int	ft_usleep(useconds_t time)
 {
 	u_int64_t	start;
 
@@ -82,7 +85,7 @@ int ft_usleep(useconds_t time)
 	return (0);
 }
 
-int	ft_atoi(char *str)
+long	ft_atoi(char *str)
 {
 	int	i;
 	int	s;
@@ -106,4 +109,14 @@ int	ft_atoi(char *str)
 		i++;
 	}
 	return (res * s);
+}
+
+int ft_strcmp(char *s1, char *s2)
+{
+	while (*s1 != '\0' && (*s1 == *s2))
+	{
+		s1++;
+		s2++;
+	}
+	return (*(char *)s1 - *(char *)s2);
 }

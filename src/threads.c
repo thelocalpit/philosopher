@@ -6,23 +6,12 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/23 18:30:50 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/25 15:38:32 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 
 #include "../inc/philosopher.h"
-
-/* funzione messages.
-	
-	non so se la voglio fare. per strutturarla in maniera funzionale, dovrei
-	creare condizioni secondo le quali viene scritta una cosa piuttosto
-	che un'altra. Tterribi utilizza un metodo con il define nell header,
-	io per ora ho deciso di printare a schermo ciascuna volta. 
-	infatti utilizza una funzione di lock per non far scrivere le cose
-	contemporanemente ma in maniera ordianta. Molto intelligente.
-	beh su qeusta cosa devo chiedere a qualcuno se c'è un'alternativa. 
-	però non è richiesto che venga eseguito in ordine.  */
 
 
 /* monitor
@@ -43,7 +32,9 @@ void	*monitor(void *philo_p)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_p;
+	pthread_mutex_lock(&philo->data->write);
 	// printf("data val: %d", philo->data->dead);
+	pthread_mutex_unlock(&philo->data->write);
 	while (philo->data->dead == 0)
 	{
 		pthread_mutex_lock(&philo->lock);
@@ -79,7 +70,7 @@ void	*monitor(void *philo_p)
 void	*supervisor(void *philo_p)
 {
 	t_philo		*philo;
-	u_int64_t	time;
+	// u_int64_t	time;
 
 	philo = (t_philo *)philo_p;
 	while (philo->data->dead == 0)
@@ -87,8 +78,9 @@ void	*supervisor(void *philo_p)
 		pthread_mutex_lock(&philo->lock);
 		if (get_time() >= philo->time_to_die && philo->eating == 0)
 		{
-			time = get_time() - philo->data->start_time;
-			printf("%llu %d philo is dead", time, philo->id);
+			messages("died", philo);
+			// time = get_time() - philo->data->start_time;
+			// printf("%llu %d philo is dead", time, philo->id);
 		}
 		if (philo->eat_count == philo->data->meals_nb)
 		{
@@ -97,8 +89,9 @@ void	*supervisor(void *philo_p)
 			philo->eat_count++;
 			pthread_mutex_unlock(&philo->data->lock);
 		}
+		pthread_mutex_unlock(&philo->lock);
 	}
-	pthread_mutex_unlock(&philo->lock);
+	return ((void *)0);
 }
 
 /* routine
@@ -129,20 +122,21 @@ void	*supervisor(void *philo_p)
 	concluso con un pthread join.
 	 */
 
-void	*routine(void *philo_pointer)
+void	*routine(void *philo_p)
 {
 	t_philo		*philo;
-	u_int64_t	time;
+	// u_int64_t	time;
 
-	philo = (t_philo *) philo_pointer;
+	philo = (t_philo *) philo_p;
 	philo->time_to_die = get_time() + philo->data->death_time;
 	if (pthread_create(&philo->t_super, NULL, &supervisor, (void *) philo))
 		return ((void *)1);
 	while (philo->data->dead == 0)
 	{
 		eat(philo);
-		time = get_time() - philo->data->start_time;
-		printf("%llu %d philo is thinking", time, philo->id);
+		messages("is thinking", philo);
+		// time = get_time() - philo->data->start_time;
+		// printf("%llu %d philo is thinking", time, philo->id);
 	}
 	if (pthread_join (philo->t_super, NULL))
 		return ((void *)1);
