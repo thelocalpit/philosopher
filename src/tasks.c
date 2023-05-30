@@ -6,15 +6,15 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/30 12:11:33 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/30 12:12:12 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:30:46 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
 
-void *monitor(void *philo_p)
+void	*monitor(void *philo_p)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)philo_p;
 	while (philo->data->dead == 0)
@@ -27,9 +27,9 @@ void *monitor(void *philo_p)
 	return ((void *)0);
 }
 
-void *supervisor(void *philo_p)
+void	*supervisor(void *philo_p)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)philo_p;
 	while (philo->data->dead == 0)
@@ -49,9 +49,9 @@ void *supervisor(void *philo_p)
 	return ((void *)0);
 }
 
-void *routine(void *philo_p)
+void	*routine(void *philo_p)
 {
-	t_philo *philo;
+	t_philo	*philo;
 
 	philo = (t_philo *)philo_p;
 	philo->time_to_die = get_time() + philo->data->death_time;

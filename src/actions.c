@@ -6,15 +6,15 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:37:58 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/30 11:40:30 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:22:22 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
 
-u_int64_t get_time(void)
+u_int64_t	get_time(void)
 {
-	struct timeval tv;
+	struct timeval	tv;
 
 	if (gettimeofday(&tv, NULL))
 	{
@@ -24,10 +24,10 @@ u_int64_t get_time(void)
 	return ((tv.tv_sec * (u_int64_t)1000) + (tv.tv_usec / 1000));
 }
 
-void messages(char *str, t_philo *philo)
+void	messages(char *str, t_philo *philo)
 {
-	u_int64_t time;
-	
+	u_int64_t	time;
+
 	pthread_mutex_lock(&philo->data->write);
 	time = get_time() - philo->data->start_time;
 	if (ft_strcmp("died", str) == 0 && philo->data->dead == 0)

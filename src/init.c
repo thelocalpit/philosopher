@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:00 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/30 11:58:42 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:22:50 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	ft_init_philo(t_data *data)
 		data->philos[i].eat_count = 0;
 		data->philos[i].eating = 0;
 		data->philos[i].time_to_die = data->death_time;
-		// data->philos[i].status = 0;
 		pthread_mutex_init(&data->philos[i].lock, NULL);
 	}
 }

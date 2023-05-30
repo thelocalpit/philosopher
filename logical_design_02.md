@@ -436,3 +436,43 @@ una pausa (delay) nell'esecuzione del programma
 per un determinato numero di microsecondi. */
 
 // Controllo subito con questa funzione che i caratteri inseriti siano giusti
+
+-----------------------------------------------------------------------------------------
+
+PHILOSOPHER.H
+
+STRUCT PHILO
+
+/* la struttura philo raccoglie tutte le variabili necessarie per definire le
+	caratteristiche di ciascun filosofo. 
+	troviamo il t1 che è un valore necessario per definire il thread.
+	??? id:
+	eat count: tiene conto del numero di volte che il filosofo ha mangiato.
+	status: serve per sapere in che status è il filosofo (thinking, eating,
+	sleeping).
+	eating: è necesario per apere se sta ancora mangiando. puô capitare infatti
+	che il filosofo arrivi al punto in cui deve morire, ma invece lo 
+	lasciamo vivo perchè ha già cominciato il processo di mangiare, 
+	quindi è riuscito a sopravviere
+	??? time to die: necessario sapere quanto tempo manca a morire.
+	mutex: servono per bloccare le risorse per quel determinato filosofo, 
+	fintanto che non avrà finito di mangiare. questo permetterà 
+	di non avere problemi di race.
+	lock, r_fork, l_fork.
+	 */
+
+	 STRUCT DATA
+
+	 /* la struttura data serve per raccogliere le variabili provenineti 
+	dagli argomenti passati.
+	il puntatore tid, serve per identificare il numero di ciascun 
+	thread crreato, quindi il numero di riconoscimento del philosopher
+	in sostanza. 
+	phil num: è il numero di filosofi totali
+	meal_nb:  è il numero di pasti che ogni filosofo deve fare.
+	dead: variabile booleana che ci serve per capire se c'è qualche morto o meno.
+	stop: se c'è qualcuno che ha finito e quanti hanno finito.
+	dead, eat, sleep, start time: variabili raccolte dagli argomenti. 
+	??? mutex: forks, lock, write: da capire bene come e perchè. */
+
+

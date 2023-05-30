@@ -6,16 +6,15 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/30 12:21:31 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:27:57 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "../inc/philosopher.h"
 
-int ft_thread_routine(t_data *data)
+int	ft_thread_routine(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < data->philo_nb)
@@ -33,8 +32,8 @@ int ft_thread_routine(t_data *data)
 
 int	ft_thread_mon(t_data *data)
 {
-	pthread_t t_mon;
-	
+	pthread_t	t_mon;
+
 	if (data->meals_nb > 0)
 	{
 		if (pthread_create(&t_mon, NULL, &monitor, &data->philos[0]))
@@ -49,7 +48,7 @@ int	ft_thread_mon(t_data *data)
 
 int	ft_thread_join(t_data *data)
 {
-	int i;
+	int	i;
 
 	i = -1;
 	while (++i < data->philo_nb)

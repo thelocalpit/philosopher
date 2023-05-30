@@ -6,12 +6,11 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:10 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/30 12:02:50 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 17:29:29 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../inc/philosopher.h"
-
 
 int	input_checker(char **av)
 {
@@ -41,7 +40,7 @@ int	input_checker(char **av)
 	return (0);
 }
 
-int ft_usleep(useconds_t time)
+int	ft_usleep(useconds_t time)
 {
 	u_int64_t	start;
 
@@ -77,7 +76,7 @@ long	ft_atoi(char *str)
 	return (res * s);
 }
 
-int ft_strcmp(char *s1, char *s2)
+int	ft_strcmp(char *s1, char *s2)
 {
 	while (*s1 != '\0' && (*s1 == *s2))
 	{
