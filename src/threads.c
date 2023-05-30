@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:06 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:38:32 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 10:42:51 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 	nuemro di philos.
 	a quel punto la variabile dead sarà uguale a 1 e uscirà dal loop. Non perchè
 	è morto qualcuno ma perchè ci evitiamo di fare un'altra variabile.
+
 	 */
 
 void	*monitor(void *philo_p)
@@ -32,9 +33,9 @@ void	*monitor(void *philo_p)
 	t_philo	*philo;
 
 	philo = (t_philo *)philo_p;
-	pthread_mutex_lock(&philo->data->write);
+	// pthread_mutex_lock(&philo->data->write);
 	// printf("data val: %d", philo->data->dead);
-	pthread_mutex_unlock(&philo->data->write);
+	// pthread_mutex_unlock(&philo->data->write);
 	while (philo->data->dead == 0)
 	{
 		pthread_mutex_lock(&philo->lock);
@@ -177,40 +178,42 @@ quindi routine diremo "hey amico te pupoi andare" mentre diremo anche
 	nella funzione che viene chiamata Routine.
 	pthread_create passa come argomenti anche funzione che serve per dire cosa deve
 	fare il thread una volta creato. ritorna un puntato void e chiede
-	un puntatore void. 
+	un puntatore void.
 
 	quindi come gestiamo questo argomento void?
 	semplicemente lo castiamo a un t_philo che nel nostro header è una struct con
-	tutto il necessario per definire il philo in questione. 
+	tutto il necessario per definire il philo in questione.
 
-	quindi pthread_join serve per dare ordine e aspettare che un determinato thread 
-	(che passiamo come argomento) terminato. necessario come in questo caso che 
+	quindi pthread_join serve per dare ordine e aspettare che un determinato thread
+	(che passiamo come argomento) terminato. necessario come in questo caso che
 	ci sarà un momento (la morte) che determinerà la fine del thread.
-	
+
 	la chiamata pthread_join(data->tid[i], NULL) viene utilizzata per
 	attendere la terminazione di ciascun thread creato precedentemente
 	con pthread_create.
 	Questo assicura che il thread chiamante sospenda la propria esecuzione
 	e attenda fino a quando il thread specificato da data->tid[i]
 	ha completato la sua esecuzione.
-	La funzione pthread_join blocca l'esecuzione del thread chiamante fino a 
-	quando il thread specificato termina. Una volta che il thread termina, 
-	il controllo ritorna al thread chiamante e può procedere 
+	La funzione pthread_join blocca l'esecuzione del thread chiamante fino a
+	quando il thread specificato termina. Una volta che il thread termina,
+	il controllo ritorna al thread chiamante e può procedere
 	con le successive istruzioni.
 	con il ciclo dove chiamiamo phthread_join, controlliamo che i processi siano finiti
 	e si può proseguire con gli altri.
-	
+
 
 	utilizziamo la funzione get_time per calcolare il timestamp (in int64)
 	in millisecondi per definire l'inizio del processo.
 
-	ft_usleep necessario per creare tempo d'attesa. 
-	Rifacciamo la funzione per i fatti nostri perchè è la funzione standard usleep 
-	è stata deprecata.
+	ft_usleep necessario per creare tempo d'attesa.
+	Rifacciamo la funzione per i fatti nostri perchè è la funzione standard usleep
+	è stata deprecata e la rendiamo più veloce.
 	
 
+	pthread_join wich is simply going to tell the program "wait untill all the 
+	threads terminate in order to continue the execution of the program".
 
-	
+
 	 */
 
 int	thread_init(t_data *data)

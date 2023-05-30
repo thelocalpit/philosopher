@@ -6,7 +6,7 @@
 #    By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/03/28 10:29:44 by pfalasch          #+#    #+#              #
-#    Updated: 2023/05/25 16:51:18 by pfalasch         ###   ########.fr        #
+#    Updated: 2023/05/30 11:23:46 by pfalasch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -46,7 +46,7 @@ $(NAME):	$(OBJ) $(OBJF)
 			@$(ECHO) -n "$(RED)]$(DEF_COLOR)"
 			@$(ECHO) -n "$(GREEN) => 100%$(DEF_COLOR)\n"
 			@$(ECHO) -n "$(YELLOW)[philo]:\t$(DEF_COLOR)"
-			@$(CC) $(FLAGS) $(OBJ) $(HEADER)
+			@$(CC) $(FLAGS) $(OBJ) $(HEADER) -o $(NAME)
 			@$(ECHO) "$(GREEN) => Success!$(DEF_COLOR)"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c $(OBJF)

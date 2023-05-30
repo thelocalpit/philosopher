@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 19:38:10 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 15:39:25 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 11:10:47 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,27 @@ int	input_checker(char **av)
 	return (0);
 }
 
-int	ft_usleep(useconds_t time)
+/* Nella riga di codice usleep(time / 10), viene utilizzata la divisione per 10
+del valore time passato come parametro alla funzione ft_usleep.Questa divisione
+viene eseguita per ridurre il tempo di sospensione effettivo durante ciascuna
+iterazione del ciclo while.La funzione usleep viene utilizzata per sospendere
+l'esecuzione del programma per un determinato periodo di tempo espresso
+in microsecondi. Tuttavia, in alcuni sistemi operativi o configurazioni,
+la precisione di usleep potrebbe essere limitata a intervalli di tempo
+più grandi, ad esempio millisecondi. Dividendo time per 10, si riduce il tempo
+di sospensione effettivo a un decimo del valore originale.Questo viene fatto per
+garantire che il ciclo while venga eseguito più volte, consentendo una maggiore
+precisione nella misurazione del tempo trascorso.Ad esempio, se il parametro time
+viene impostato su 100.000 microsecondi(0, 1 secondi), la funzione usleep verrà
+chiamata con l'argomento 10.000 microsecondi (0,01 secondi) durante ciascuna
+iterazione del ciclo while. Ciò consente di avere un controllo più preciso
+sul tempo trascorso e assicura che il tempo totale di sospensione sia vicino
+al valore desiderato.
+
+il millisecondo (ms), che rappresenta un millesimo di secondo (0,001 secondi), 
+il microsecondo (µs), che rappresenta un milionesimo di secondo (0,000001 secondi). */
+
+int ft_usleep(useconds_t time)
 {
 	u_int64_t	start;
 
