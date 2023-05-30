@@ -6,7 +6,7 @@
 /*   By: pfalasch <pfalasch@student.42roma.it>      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/05/04 18:19:51 by pfalasch          #+#    #+#             */
-/*   Updated: 2023/05/25 17:43:50 by pfalasch         ###   ########.fr       */
+/*   Updated: 2023/05/30 12:20:30 by pfalasch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,8 @@ long		ft_atoi(char *str);
 int			ft_init(t_data *data, int ac, char **av);
 int			ft_strcmp(char *s1, char *s2);
 void		messages(char *str, t_philo *philo);
+int			ft_thread_routine(t_data *data);
+int			ft_thread_mon(t_data *data);
+int			ft_thread_join(t_data *data);
 
 #endif
